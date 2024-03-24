@@ -4,7 +4,7 @@ from django.urls import path
 from django.utils.safestring import mark_safe
 from django import forms
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
-from .models import Category, Course, User, Tag
+from .models import Category, Course, User, Tag, Lesson
 from .dao import count_course_by_cat
 
 
@@ -27,11 +27,21 @@ class CourseAppAdminSite(admin.AdminSite):
 class CourseTagInlineAdmin(admin.TabularInline):
     model = Course.tags.through
 
+class LessonTagInlineAdmin(admin.TabularInline):
+    model = Lesson.tags.through
+
 class CourseForm(forms.ModelForm):
     description = forms.CharField(widget=CKEditorUploadingWidget)
 
     class Meta:
         model = Course
+        fields = '__all__'
+
+class LessonForm(forms.ModelForm):
+    description = forms.CharField(widget=CKEditorUploadingWidget)
+
+    class Meta:
+        model = Lesson
         fields = '__all__'
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -44,9 +54,13 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ['id', 'subject', 'description']
     search_fields = ['subject']
     list_filter = ['id', 'subject']
-    readonly_fields = ['ava']
     form = CourseForm
     inlines = [CourseTagInlineAdmin]
+    readonly_fields = ['ava']
+    class Media:
+        css = {
+            'all': ('/static/css/style.css',)
+        }
     def ava(self, obj):
         if obj:
             return mark_safe(
@@ -54,10 +68,17 @@ class CourseAdmin(admin.ModelAdmin):
                     .format(url=obj.image.name)
             )
 
-    class Media:
-        css = {
-            'all': ('/static/css/style.css',)
-        }
+class LessonAdmin(admin.ModelAdmin):
+    list_display = ['id', 'subject', 'description']
+    form = LessonForm
+    inlines = [LessonTagInlineAdmin]
+    readonly_fields = ['ava']
+    def ava(self, obj):
+        if obj:
+            return mark_safe(
+                '<img src="/static/{url}" width="120" />' \
+                    .format(url=obj.image.name)
+            )
 
 admin_site = CourseAppAdminSite(name="myapp")
 
@@ -65,3 +86,4 @@ admin_site.register(Category, CategoryAdmin)
 admin_site.register(Course, CourseAdmin)
 admin_site.register(User)
 admin_site.register(Tag)
+admin_site.register(Lesson, LessonAdmin)

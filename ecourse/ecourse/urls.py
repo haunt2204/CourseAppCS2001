@@ -39,10 +39,14 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register('categories', views.CategoryViewSet, basename='categories')
 router.register('courses', views.CourseViewSet, basename='courses')
+router.register('lessons', views.LessonViewSet, basename='lessons')
+router.register('users', views.UserViewSet, basename='users')
 
 urlpatterns = [
     path('', include(router.urls)),
     path('admin/', admin_site.urls),
+    path('o/', include('oauth2_provider.urls',
+    namespace='oauth2_provider')),
     re_path(r'^ckeditor/',include('ckeditor_uploader.urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
     schema_view.without_ui(cache_timeout=0),

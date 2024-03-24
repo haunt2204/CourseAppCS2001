@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'rest_framework',
     'drf_yasg',
+    'oauth2_provider'
 
 ]
 
@@ -78,6 +79,23 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ecourse.wsgi.application'
+
+CLIENT_ID = 'hB7Y3ctuDEfm3aHHXZQr5CVUoju2VzdCuCtDfVuS'
+CLIENT_SECRET = 'zFNgi1v7OvkkFM15y8jf4IklWudBg0eDQJn6cP4YRIKskOP6pcw1zjnXIr1OTG8j0GEOcZWbb1JaO1IdmsW0AgWBZt3xCnIXa5yD4sCTKKQlDtCAGS6A3wOvH3VQheec'
+
+import cloudinary
+
+cloudinary.config(
+    cloud_name="dy1unykph",
+    api_key="238791983534257",
+    api_secret="_J2MkfDJ1DwRe1uAn5TKozXup0U"
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    )
+}
 
 import pymysql
 pymysql.install_as_MySQLdb()
